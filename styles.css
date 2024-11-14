@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+
+body {
+    background-color: #1a1a1a;
+    color: #f1f1f1;
+    flex-direction: column;
+}
+
+div.content {
+    margin-left: 50px;
+    padding: 1px 16px;
+    height: 1000px;
+}
+
+h1 {
+    margin-left: 50px;
+    float: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 equal columns */
+    grid-template-rows: 1fr 1fr; /* 2 equal rows */
+    grid-template-areas:
+        "tasks exams project"
+        "ia_ee schedule right-bottom";
+    grid-gap: 20px;
+    width: 80vw;
+    max-width: 1200px;
+}
+
+.box {
+    background-color: #2C3E50;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #f1f1f1;
+    height: 150px;
+}
+
+
+/* Assiging Grid Areas to each box */
+.tasks {
+    grid-area: tasks;
+}
+
+.exams {
+    grid-area: exams;
+}
+
+.project {
+    grid-area: project;
+}
+
+.ia_ee {
+    grid-area: ia_ee;
+}
+
+.schedule {
+    grid-area: schedule;
+}
+
+.right-bottom {
+    grid-area: right-bottom;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+}
+
+.right-bottom .box {
+    height: 100%;
+}
+
+img {
+    height: 20px;
+    width: 20px;
+}
+
+.sidebar {
+    margin: 0;
+    padding: 0;
+    width: 50px;
+    background-color: #2C3E50;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+.sidebar a {
+    display: block;
+    padding: 16px;
+    text-decoration: none;
+}
+
+.sidebar a.active {
+    background-color: #111921;
+}
+
+.sidebar a:hover:not(.active) {
+    background-color: #1A2633;
+}
