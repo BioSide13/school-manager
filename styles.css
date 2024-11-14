@@ -71,6 +71,27 @@ h1 {
 
 .schedule {
     grid-area: schedule;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+
+#weekInfo {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+#scheduleList {
+    list-style-position: inside;
+    list-style-type: none;
+    padding: 0;
+}
+
+#scheduleList li {
+    margin: 5px 0;
 }
 
 .spotify {
