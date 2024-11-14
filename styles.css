@@ -5,51 +5,54 @@
     font-family: 'Josefin Sans', sans-serif;
 }
 
-
 body {
     background-color: #1a1a1a;
     color: #f1f1f1;
+    display: flex;
     flex-direction: column;
-}
-
-div.content {
-    margin-left: 50px;
-    padding: 1px 16px;
-    height: 1000px;
+    min-height: 100vh;
 }
 
 h1 {
-    margin-left: 50px;
-    float: left;
+    margin-left: 70px;
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    min-height: calc(100vh - 60px); /* Adjusts to keep it centered vertically */
+}
+
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* 3 equal columns */
-    grid-template-rows: 1fr 1fr; /* 2 equal rows */
+    margin-left: 50px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
     grid-template-areas:
         "tasks exams project"
-        "ia_ee schedule right-bottom";
+        "ia_ee ia_ee schedule"
+        "spotify notes notes";
     grid-gap: 20px;
-    width: 80vw;
-    max-width: 1200px;
+    width: 100%;
+    height: 100%;
 }
 
 .box {
     background-color: #2C3E50;
     border-radius: 10px;
-    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.2rem;
     color: #f1f1f1;
-    height: 150px;
+    height: 300px;
 }
 
-
-/* Assiging Grid Areas to each box */
+/* Assigning each box to its specific grid area */
 .tasks {
     grid-area: tasks;
 }
@@ -70,15 +73,12 @@ h1 {
     grid-area: schedule;
 }
 
-.right-bottom {
-    grid-area: right-bottom;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 10px;
+.spotify {
+    grid-area: spotify;
 }
 
-.right-bottom .box {
-    height: 100%;
+.notes {
+    grid-area: notes;
 }
 
 img {
