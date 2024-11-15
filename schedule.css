@@ -45,14 +45,21 @@ img {
     align-items: center;
     font-size: 1.2rem;
     color: #f1f1f1;
-    height: 90vh;
+    height: 100vh;
+    overflow: scroll;
+}
+
+table {
+    height: 99%;
+    width: 99%;
+    border-collapse: collapse;
+    font-size: medium;
 }
 
 th, td {
     border-right: 1px solid;
     border-bottom: 1px solid;
     text-align: center;
-    padding: 23px;
 }
 
 .sidebar {
