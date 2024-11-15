@@ -56,3 +56,23 @@ function displaySchedule() {
 }
 
 document.addEventListener("DOMContentLoaded", displaySchedule);
+
+function greeting() {
+    const now = new Date();
+    const hours = now.getHours();
+    const greeting = document.getElementById("greeting");
+
+    greeting.innerHTML = "";
+
+    if (hours < 12 & hours >= 5) {
+        greeting.textContent = "Good Morning Arhan!"
+    } else if (hours >= 12 & hours < 16) {
+        greeting.textContent = "Good Afternoon Arhan!"
+    } else if (hours >= 16 & hours < 20) {
+        greeting.textContent = "Good Evening Arhan!"
+    } else if (hours >= 20 || hours < 5) {
+        greeting.textContent = "Good Night Arhan!"
+    }
+}
+
+document.addEventListener("DOMContentLoaded", greeting);
