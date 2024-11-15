@@ -53,6 +53,7 @@ table {
     height: 99%;
     width: 99%;
     border-collapse: collapse;
+    font-size: medium;
 }
 
 th, td {

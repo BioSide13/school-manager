@@ -58,7 +58,7 @@ function displaySchedule() {
 document.addEventListener("DOMContentLoaded", displaySchedule);
 
 function greeting() {
-    const now = new Date();
+    const now = getTodayDate();
     const hours = now.getHours();
     const greeting = document.getElementById("greeting");
 
