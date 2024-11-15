@@ -24,6 +24,38 @@ img {
     width: 20px;
 }
 
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    min-height: calc(100vh - 60px); /* Adjusts to keep it centered vertically */
+}
+
+.container {
+    margin-left: 50px;
+    width: 100%;
+    height: 100%;
+}
+
+.box {
+    background-color: #2C3E50;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #f1f1f1;
+    height: 90vh;
+}
+
+th, td {
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    text-align: center;
+    padding: 23px;
+}
+
 .sidebar {
     margin: 0;
     padding: 0;
