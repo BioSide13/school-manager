@@ -6,6 +6,9 @@ It also has Spotify integration and Quick Notes on the dashboard. <br />
 It can also store your exam dates, calculate your GPA based on your scores, and predict your predicted scores. <br />
 It will also tell you how much you need to score to reach a 45/45. <br />
 
+## Set-Up
+This repo is still a work in progress and hence cannot be set-up as of right now
+
 ## Customise Timetable
 To customise the timetable go into script.js and edit the dictionary with your timetable <br />
 Go into schedule.html and edit the information in the table with your timetable <br />
