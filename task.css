@@ -1,3 +1,4 @@
+/* Reset and global styles */
 * {
     margin: 0;
     padding: 0;
@@ -9,41 +10,225 @@ body {
     background-color: #1a1a1a;
     color: #f1f1f1;
     display: flex;
-    flex-direction: column;
     min-height: 100vh;
 }
 
-h1 {
-    margin-left: 70px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-img {
-    height: 20px;
-    width: 20px;
-}
-
+/* Sidebar styles */
 .sidebar {
-    margin: 0;
-    padding: 0;
     width: 50px;
     background-color: #2C3E50;
     position: fixed;
     height: 100%;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
 }
 
 .sidebar a {
-    display: block;
-    padding: 16px;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
     text-decoration: none;
 }
 
 .sidebar a.active {
     background-color: #111921;
+    border-radius: 8px;
 }
 
 .sidebar a:hover:not(.active) {
     background-color: #1A2633;
+    border-radius: 8px;
+}
+
+img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Main content layout */
+.main-content {
+    margin-left: 70px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* Task board layout */
+.task-board {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.column {
+    background-color: #2C3E50;
+    border-radius: 10px;
+    padding: 20px;
+    flex: 1;
+}
+
+.column h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 300px;
+}
+
+/* Task card styles */
+.task-card {
+    background-color: #3E4A59;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-card.low-priority {
+    border-left: 5px solid #27AE60; /* Green */
+}
+
+.task-card.medium-priority {
+    border-left: 5px solid #F1C40F; /* Yellow */
+}
+
+.task-card.high-priority {
+    border-left: 5px solid #E74C3C; /* Red */
+}
+
+/* Details panel styles */
+.details-panel {
+    margin-top: 20px;
+    background-color: #2C3E50;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.details-panel h2 {
+    margin-bottom: 10px;
+}
+
+#task-details {
+    color: #f1f1f1;
+    line-height: 1.6;
+}
+
+/* Edit Task Button */
+#edit-task-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #3498DB; /* Blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#edit-task-btn:hover {
+    background-color: #2980B9;
+}
+
+/* Add Task Button */
+.add-task-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: 10px 20px;
+}
+
+#add-task-btn {
+    background-color: #27AE60; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#add-task-btn:hover {
+    background-color: #219150;
+}
+
+/* Modal Styling */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: #2C3E50;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 10px;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.modal-content button {
+    background-color: #27AE60;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #219150;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #bbb;
 }

@@ -1,19 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="task.css" rel="stylesheet"/>
+    <link href="task.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans">
     <title>Tasks | Task Manager</title>
 </head>
 <body>
-<div class="sidebar">
-    <a href="index.html"><img src="./icons/home.png"></a>
-    <a class="active" href="task.html"><img src="./icons/tasks.png"></a>
-    <a href="schedule.html"><img src="./icons/schedule.png"></a>
-</div>
-<h1>Tasks</h1>
-<div class="not_started"></div>
-<div class="in_progress"></div>
-<div class="details"></div>
+    <div class="sidebar">
+        <a href="index.html"><img src="./icons/home.png" alt="Home"></a>
+        <a class="active" href="task.html"><img src="./icons/tasks.png" alt="Tasks"></a>
+        <a href="schedule.html"><img src="./icons/schedule.png" alt="Schedule"></a>
+    </div>
+
+    <div class="main-content">
+        <h1>Tasks</h1>
+        <!-- Add Task Button -->
+        <div class="add-task-container">
+            <button id="add-task-btn">+ Add Task</button>
+        </div>
+
+        <div class="task-board">
+            <!-- Task Status Columns -->
+            <div class="column not-started">
+                <h2>Not Started</h2>
+                <div class="task-list" id="not-started"></div>
+            </div>
+            <div class="column in-progress">
+                <h2>In Progress</h2>
+                <div class="task-list" id="in-progress"></div>
+            </div>
+        </div>
+
+        <!-- Details Panel -->
+        <div class="details-panel">
+            <h2>Task Details</h2>
+            <div id="task-details">
+                <p>Select a task to view details.</p>
+                <button id="edit-task-btn" class="hidden">Edit Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Form Modal (Hidden by Default) -->
+    <div id="task-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2>Add/Edit Task</h2>
+            <form id="task-form">
+                <label for="task-name">Task Name:</label>
+                <input type="text" id="task-name" required>
+
+                <label for="task-subject">Subject:</label>
+                <input type="text" id="task-subject" required>
+
+                <label for="task-due-date">Due Date:</label>
+                <input type="date" id="task-due-date" required>
+
+                <label for="task-priority">Priority:</label>
+                <select id="task-priority" required>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+
+                <label for="task-subtasks">Subtasks (Optional):</label>
+                <textarea id="task-subtasks" placeholder="Enter subtasks separated by commas"></textarea>
+
+                <button type="submit" id="save-task-btn">Save Task</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="tasks.js"></script>
 </body>
 </html>
