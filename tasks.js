@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskDetails = document.getElementById('task-details');
     const editTaskBtn = document.getElementById('edit-task-btn');
 
-    let selectedTask = null; // To track the currently selected task
+    let selectedTask = null; // Track the currently selected task
 
     // Show the modal when clicking "Add Task"
     addTaskBtn.addEventListener('click', () => {
-        selectedTask = null; // Clear selected task for a new task
+        selectedTask = null; // Clear the selected task for new entry
         taskForm.reset();
         taskModal.classList.remove('hidden');
     });
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             let response;
             if (selectedTask) {
-                // Update existing task
+                // Update an existing task
                 response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -61,11 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const savedTask = await response.json();
 
-            // Add or update the task in the DOM
-            if (selectedTask) {
-                updateTaskInDOM(savedTask);
-            } else {
+            if (!selectedTask) {
+                // Add the task to the DOM if it is new
                 addTaskToDOM(savedTask);
+            } else {
+                // Update the DOM for the selected task
+                updateTaskInDOM(savedTask);
             }
 
             taskModal.classList.add('hidden');
@@ -89,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         taskCard.textContent = task.name;
         taskCard.dataset.id = task._id;
 
-        // Add click event to display task details
         taskCard.addEventListener('click', () => {
             displayTaskDetails(task);
         });
@@ -103,13 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (taskCard) {
             taskCard.textContent = task.name;
             taskCard.className = `task-card ${task.priority}-priority`;
-            taskCard.title = `Subject: ${task.subject}\nDue: ${new Date(task.dueDate).toLocaleDateString()}\nPriority: ${task.priority}`;
         }
     }
 
-    // Function to display task details
+    // Function to display task details and toggle edit button
     function displayTaskDetails(task) {
-        selectedTask = task; // Store the selected task
+        selectedTask = task; // Track the selected task
         taskDetails.innerHTML = `
             <p><strong>Name:</strong> ${task.name}</p>
             <p><strong>Subject:</strong> ${task.subject}</p>
@@ -117,8 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Priority:</strong> ${task.priority}</p>
             <p><strong>Subtasks:</strong> ${task.subtasks.join(', ') || 'None'}</p>
         `;
-        editTaskBtn.classList.remove('hidden');
+        editTaskBtn.classList.remove('hidden'); // Show the edit button
     }
+
+    // Handle task deselection and edit button visibility
+    document.body.addEventListener('click', (e) => {
+        const taskCard = e.target.closest('.task-card');
+        if (!taskCard && !taskDetails.contains(e.target)) {
+            editTaskBtn.classList.add('hidden'); // Hide the edit button
+            selectedTask = null; // Clear selected task
+        }
+    });
 
     // Edit button functionality
     editTaskBtn.addEventListener('click', () => {
@@ -152,6 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initial loading of tasks
+    // Initial load of tasks
     loadTasks();
 });
