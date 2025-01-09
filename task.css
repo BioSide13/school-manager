@@ -123,7 +123,7 @@ img {
     line-height: 1.6;
 }
 
-/* Edit Task Button */
+/* Edit & Delete Task Button */
 #edit-task-btn {
     margin-top: 10px;
     padding: 10px 20px;
@@ -135,8 +135,22 @@ img {
     font-size: 16px;
 }
 
+#delete-task-btn {
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10x 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
 #edit-task-btn:hover {
     background-color: #2980B9;
+}
+
+#delete-task-btn:hover {
+    background-color: #C0392B;
 }
 
 /* Add Task Button */
