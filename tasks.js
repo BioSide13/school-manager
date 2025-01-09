@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inProgressList = document.getElementById('in-progress');
     const taskDetails = document.getElementById('task-details');
     const editTaskBtn = document.getElementById('edit-task-btn');
+    const deleteTaskBtn = document.getElementById('delete-task-btn');
 
     let selectedTask = null; // Track the currently selected task
 
@@ -35,7 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .getElementById('task-subtasks')
             .value.trim()
             .split(',')
-            .map(task => task.trim());
+            .map(task => task.trim())
+            .filter(task => task !== ''); // Filter out empty strings
 
         try {
             let response;
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to display task details and toggle edit button
+    // Function to display task details and show buttons
     function displayTaskDetails(task) {
         selectedTask = task; // Track the selected task
         taskDetails.innerHTML = `
@@ -116,15 +118,20 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Priority:</strong> ${task.priority}</p>
             <p><strong>Subtasks:</strong> ${task.subtasks.join(', ') || 'None'}</p>
         `;
-        editTaskBtn.classList.remove('hidden'); // Show the edit button
+        // Show both button when task is selected
+        editTaskBtn.style.display = 'block'; 
+        deleteTaskBtn.style.display = 'block';
     }
 
-    // Handle task deselection and edit button visibility
+    // Handle task deselection
     document.body.addEventListener('click', (e) => {
         const taskCard = e.target.closest('.task-card');
-        if (!taskCard && !taskDetails.contains(e.target)) {
-            editTaskBtn.classList.add('hidden'); // Hide the edit button
-            selectedTask = null; // Clear selected task
+        const isModalClick = e.target.closest('.modal-content');
+        const isEditButtonClick = e.target === editTaskBtn;
+        const isDeleteButtonClick = e.target === deleteTaskBtn;
+        
+        if (!taskCard && !isModalClick && !isEditButtonClick && !isDeleteButtonClick && !taskDetails.contains(e.target)) {
+            resetTaskDetailsAndButtons();
         }
     });
 
@@ -135,6 +142,52 @@ document.addEventListener('DOMContentLoaded', () => {
             taskModal.classList.remove('hidden');
         }
     });
+
+    // Delete button functionality with duplicate prevention
+    deleteTaskBtn.addEventListener('click', async (e) => {
+        // Prevent event propagation
+        e.stopPropagation();
+        
+        // Guard clause: exit if no task selected or if delete is in progress
+        if (!selectedTask || !selectedTask._id) return;
+
+        // Store task ID before deletion
+        const taskId = selectedTask._id;
+
+        if (confirm('Are you sure you want to delete this task?')) {
+            try {
+                const response = await fetch(`http://localhost:5001/tasks/${taskId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Remove the task card from DOM
+                const taskCard = document.querySelector(`.task-card[data-id='${taskId}']`);
+                if (taskCard) {
+                    taskCard.remove();
+                }
+
+                // Reset state and UI
+                resetTaskDetailsAndButtons();
+
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                alert('Error deleting task. Please try again.');
+            }
+        }
+    });
+
+    // Separate function for resetting state and UI
+    function resetTaskDetailsAndButtons() {
+        selectedTask = null;
+        taskDetails.innerHTML = '<p>Select a task to view details.</p>';
+        editTaskBtn.style.display = 'none';
+        deleteTaskBtn.style.display = 'none';
+    }
+
 
     // Populate the modal with task details
     function populateModal(task) {
