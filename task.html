@@ -37,8 +37,10 @@
             <div id="task-details">
                 <p>Select a task to view details.</p>
             </div>
+            <div class="task-actions">
                 <button id="edit-task-btn" style="display: none;">Edit Task</button>
                 <button id="delete-task-btn" style="display: none;">Delete Task</button>
+            </div>
         </div>
 
     <!-- Task Form Modal (Hidden by Default) -->
@@ -65,6 +67,13 @@
 
                 <label for="task-subtasks">Subtasks (Optional):</label>
                 <textarea id="task-subtasks" placeholder="Enter subtasks separated by commas"></textarea>
+
+                <label for="task-status">Status:</label>
+                <select id="task-status" required>
+                    <option value="not-started">Not Started</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
 
                 <button type="submit" id="save-task-btn">Save Task</button>
             </form>
