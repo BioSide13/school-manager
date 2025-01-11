@@ -14,38 +14,33 @@ body {
 }
 
 /* Sidebar styles */
+img {
+    height: 20px;
+    width: 20px;
+}
+
 .sidebar {
+    margin: 0;
+    padding: 0;
     width: 50px;
     background-color: #2C3E50;
     position: fixed;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 10px;
+    overflow: auto;
 }
 
 .sidebar a {
-    margin-bottom: 10px;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
+    display: block;
+    padding: 16px;
     text-decoration: none;
 }
 
 .sidebar a.active {
     background-color: #111921;
-    border-radius: 8px;
 }
 
 .sidebar a:hover:not(.active) {
     background-color: #1A2633;
-    border-radius: 8px;
-}
-
-img {
-    width: 24px;
-    height: 24px;
 }
 
 /* Main content layout */
@@ -106,51 +101,95 @@ img {
     border-left: 5px solid #E74C3C; /* Red */
 }
 
-/* Details panel styles */
+/* Details panel main container */
 .details-panel {
-    margin-top: 20px;
     background-color: #2C3E50;
     padding: 20px;
     border-radius: 10px;
-}
-
-.details-panel h2 {
-    margin-bottom: 10px;
-}
-
-#task-details {
+    margin-top: 20px;
     color: #f1f1f1;
-    line-height: 1.6;
 }
 
-/* Edit & Delete Task Button */
-#edit-task-btn {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #3498DB; /* Blue */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+/* Panel header */
+.details-panel h2 {
+    color: #f1f1f1;
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* Task details container */
+#task-details {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Individual detail lines */
+#task-details p {
+    margin: 5px 0;
     font-size: 16px;
 }
 
+/* Bold labels in details */
+#task-details strong {
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+/* Button container */
+.task-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    float: left;
+}
+
+/* Base button styles */
+#edit-task-btn,
 #delete-task-btn {
-    background-color: #E74C3C;
-    color: white;
+    flex: 1;
+    max-width: 150px;
+    padding: 8px 16px;
     border: none;
     border-radius: 5px;
-    padding: 10x 20px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+/* Edit button */
+#edit-task-btn {
+    background-color: #3498DB;
+    color: white;
 }
 
 #edit-task-btn:hover {
     background-color: #2980B9;
 }
 
+/* Delete button */
+#delete-task-btn {
+    background-color: #E74C3C;
+    color: white;
+}
+
 #delete-task-btn:hover {
     background-color: #C0392B;
+}
+
+/* Style for when no task is selected */
+#task-details p:only-child {
+    color: #95a5a6;
+    font-style: italic;
+}
+
+/* Hidden state for buttons */
+#edit-task-btn[style*="display: none"],
+#delete-task-btn[style*="display: none"] {
+    display: none;
 }
 
 /* Add Task Button */
