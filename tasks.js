@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .split(',')
             .map(task => task.trim())
             .filter(task => task !== ''); // Filter out empty strings
+        const status = document.getElementById('task-status').value;
 
         try {
             let response;
@@ -89,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createTaskCard(task) {
         const taskCard = document.createElement('div');
         taskCard.className = `task-card ${task.priority}-priority`;
-        taskCard.textContent = task.name;
+        taskCard.textContent = task.name.charAt(0).toUpperCase() + task.name.slice(1).toLowerCase();
         taskCard.dataset.id = task._id;
 
         taskCard.addEventListener('click', () => {
@@ -112,10 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayTaskDetails(task) {
         selectedTask = task; // Track the selected task
         taskDetails.innerHTML = `
-            <p><strong>Name:</strong> ${task.name}</p>
-            <p><strong>Subject:</strong> ${task.subject}</p>
+            <p><strong>Name:</strong> ${task.name.charAt(0).toUpperCase() + task.name.slice(1).toLowerCase()}</p>
+            <p><strong>Subject:</strong> ${task.subject.charAt(0).toUpperCase() + task.subject.slice(1).toLowerCase()}</p>
             <p><strong>Due Date:</strong> ${new Date(task.dueDate).toLocaleDateString()}</p>
-            <p><strong>Priority:</strong> ${task.priority}</p>
+            <p><strong>Priority:</strong> ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1).toLowerCase()}</p>
             <p><strong>Subtasks:</strong> ${task.subtasks.join(', ') || 'None'}</p>
         `;
         // Show both button when task is selected
