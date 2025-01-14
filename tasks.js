@@ -12,8 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskStatusUpdate = document.querySelector('.task-status-update');
     const completedDropdownBtn = document.getElementById('completed-dropdown-btn');
     const completedTasksList = document.getElementById('completed-tasks-list');
-
-    let selectedTask = null; // Track the currently selected task
+    let selectedTask = null;
 
     // Show the modal when clicking "Add Task"
     addTaskBtn.addEventListener('click', () => {
@@ -30,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add/Edit a task when the form is submitted
     taskForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-
-        // Get form values
         const name = document.getElementById('task-name').value.trim();
         const subject = document.getElementById('task-subject').value.trim();
         const dueDate = document.getElementById('task-due-date').value;
@@ -41,12 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .value.trim()
             .split(',')
             .map(task => task.trim())
-            .filter(task => task !== ''); // Filter out empty strings
-
-        try {
+            .filter(task => task !== '');
+        
+            try {
             let response;
             if (selectedTask) {
-                // Update an existing task
                 response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -60,28 +56,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     }),
                 });
             } else {
-                // Create a new task
                 response = await fetch('http://localhost:5001/tasks/newTask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, subject, dueDate, priority, subtasks }),
                 });
             }
-
             if (!response.ok) {
                 throw new Error('Failed to save task');
             }
-
             const savedTask = await response.json();
-
             if (!selectedTask) {
-                // Add the task to the DOM if it is new
                 addTaskToDOM(savedTask);
             } else {
-                // Update the DOM for the selected task
                 updateTaskInDOM(savedTask);
             }
-
             taskModal.classList.add('hidden');
         } catch (error) {
             console.error('Error saving task:', error);
@@ -102,12 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
         taskCard.className = `task-card ${task.priority}-priority`;
         taskCard.textContent = task.name.charAt(0).toUpperCase() + task.name.slice(1).toLowerCase();
         taskCard.dataset.id = task._id;
-        taskCard.dataset.status = task.status; // Add status to dataset
-    
+        taskCard.dataset.status = task.status; 
         taskCard.addEventListener('click', () => {
             displayTaskDetails(task);
         });
-    
         return taskCard;
     }
 
@@ -115,21 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTaskInDOM(task) {
         const taskCard = document.querySelector(`.task-card[data-id='${task._id}']`);
         if (taskCard) {
-            // Update all visible properties of the task card
             taskCard.textContent = task.name.charAt(0).toUpperCase() + task.name.slice(1).toLowerCase();
             taskCard.className = `task-card ${task.priority}-priority`;
             taskCard.dataset.status = task.status;
-            
-            // If the task status has changed, move it to the correct list
             const currentList = taskCard.parentElement;
-            const targetList = document.getElementById(task.status);
-            
+            const targetList = document.getElementById(task.status);        
             if (targetList && currentList.id !== task.status) {
                 taskCard.remove();
                 targetList.appendChild(taskCard);
             }
-            
-            // Update the task details display if this is the currently selected task
             if (selectedTask && selectedTask._id === task._id) {
                 displayTaskDetails(task);
             }
@@ -138,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to display task details and show buttons
     function displayTaskDetails(task) {
-        selectedTask = task; // Track the selected task
+        selectedTask = task;
         taskDetails.innerHTML = `
             <p><strong>Name:</strong> ${task.name.charAt(0).toUpperCase() + task.name.slice(1).toLowerCase()}</p>
             <p><strong>Subject:</strong> ${task.subject.charAt(0).toUpperCase() + task.subject.slice(1).toLowerCase()}</p>
@@ -147,11 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Subtasks:</strong> ${task.subtasks.join(', ') || 'None'}</p>
         `;
 
-        // Show status select and set current value
         taskStatusUpdate.classList.remove('hidden');
         taskStatusSelect.value = task.status;
-
-        // Show both buttons when task is selected
         editTaskBtn.style.display = 'block'; 
         deleteTaskBtn.style.display = 'block';
     }
@@ -159,34 +137,72 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle status changes
     taskStatusSelect.addEventListener('change', async () => {
         if (!selectedTask) return;
-
         const newStatus = taskStatusSelect.value;
         const oldStatus = selectedTask.status;
-
         try {
+            console.log(`Updating status for task ID ${selectedTask._id} to ${newStatus}...`);
             const response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    ...selectedTask,
-                    status: newStatus 
-                }),
+                body: JSON.stringify({ status: newStatus }),
             });
 
             if (!response.ok) throw new Error('Failed to update task status');
-
             const updatedTask = await response.json();
             selectedTask = updatedTask;
-            
-            // Use the existing updateTaskInDOM function to handle the update
-            updateTaskInDOM(updatedTask);
-
+            const oldTaskCard = document.querySelector(`.task-card[data-id="${selectedTask._id}"]`);
+            if (oldTaskCard) oldTaskCard.remove();
+            if (newStatus === 'completed') {
+                updateCompletedTasksList();
+            } else if (oldStatus === 'completed') {
+                const targetList = document.getElementById(newStatus);
+                if (targetList) {
+                    const newTaskCard = createTaskCard(updatedTask);
+                    targetList.appendChild(newTaskCard);
+                }
+            } else {
+                const targetList = document.getElementById(newStatus);
+                if (targetList) {
+                    const newTaskCard = createTaskCard(updatedTask);
+                    targetList.appendChild(newTaskCard);
+                }
+            }
+            displayTaskDetails(updatedTask);
+            console.log('Task status updated successfully!');
         } catch (error) {
             console.error('Error updating task status:', error);
             alert('Error updating task status. Please try again.');
             taskStatusSelect.value = oldStatus;
         }
     });
+    
+    async function updateCompletedTasksList() {
+        try {
+            const response = await fetch('http://localhost:5001/tasks');
+            if (!response.ok) throw new Error('Failed to fetch tasks');
+            const tasks = await response.json();
+            const completedTasks = tasks.filter(task => task.status === 'completed');
+            completedTasksList.innerHTML = ''; 
+            if (completedTasks.length > 0) {
+                completedTasks.forEach(task => {
+                    const taskItem = document.createElement('div');
+                    taskItem.className = 'completed-task-item';
+                    taskItem.dataset.id = task._id;
+                    taskItem.textContent = `${task.name} (${task.subject})`;
+                    taskItem.addEventListener('click', () => {
+                        displayTaskDetails(task);
+                    });
+                    completedTasksList.appendChild(taskItem);
+                });
+            } else {
+                completedTasksList.innerHTML = '<div class="completed-task-item">No completed tasks</div>';
+            }
+        } catch (error) {
+            console.error('Error updating completed tasks list:', error);
+        }
+    }
+    
+
 
     // Handle task deselection
     document.body.addEventListener('click', (e) => {
@@ -212,34 +228,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Delete button functionality with duplicate prevention
     deleteTaskBtn.addEventListener('click', async (e) => {
-        // Prevent event propagation
         e.stopPropagation();
-        
-        // Guard clause: exit if no task selected or if delete is in progress
         if (!selectedTask || !selectedTask._id) return;
-
-        // Store task ID before deletion
         const taskId = selectedTask._id;
-
         if (confirm('Are you sure you want to delete this task?')) {
             try {
                 const response = await fetch(`http://localhost:5001/tasks/${taskId}`, {
                     method: 'DELETE'
                 });
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-
-                // Remove the task card from DOM
                 const taskCard = document.querySelector(`.task-card[data-id='${taskId}']`);
                 if (taskCard) {
                     taskCard.remove();
                 }
-
-                // Reset state and UI
                 resetTaskDetailsAndButtons();
-
             } catch (error) {
                 console.error('Error deleting task:', error);
                 alert('Error deleting task. Please try again.');
@@ -271,28 +275,20 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             console.log("Fetching tasks");
             const response = await fetch(`http://localhost:5001/tasks`);
-
             if (!response.ok) {
                 throw new Error('Failed to fetch tasks');
             }
-    
             const tasks = await response.json();
             console.log("Tasks fetched", tasks);
-            
-            // Clear existing tasks from all lists
             document.querySelectorAll('.task-list').forEach(list => {
                 list.innerHTML = '';
             });
-    
-            // Distribute tasks to appropriate lists
             tasks.forEach(task => {
                 if (task.status === 'completed') {
                     return;
                 }
-                
                 const targetListId = task.status;
                 const targetList = document.getElementById(targetListId);
-                
                 if (targetList) {
                     const taskCard = createTaskCard(task);
                     targetList.appendChild(taskCard);
@@ -300,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.warn(`Invalid status for task: ${task.status}`);
                 }
             });
-    
         } catch (error) {
             console.error('Error loading tasks:', error);
         }
@@ -320,12 +315,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch("http://localhost:5001/tasks");
             if (!response.ok) throw new Error('Failed to fetch tasks');
-    
             const tasks = await response.json();
             const completedTasks = tasks.filter(task => task.status === 'completed');
-    
             completedTasksList.innerHTML = '';
-    
             if (completedTasks.length > 0) {
                 completedTasks.forEach(task => {
                     const taskItem = document.createElement('div');
@@ -347,6 +339,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initial load of tasks
     loadTasks();
 });
