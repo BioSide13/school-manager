@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const taskId = selectedTask._id;
         if (confirm('Are you sure you want to delete this task?')) {
             try {
-                const response = await fetch(`${server}tasks/${taskId}`, {
+                const response = await fetch(`${server}/${taskId}`, {
                     method: 'DELETE'
                 });
                 if (!response.ok) {
