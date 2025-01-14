@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskStatusUpdate = document.querySelector('.task-status-update');
     const completedDropdownBtn = document.getElementById('completed-dropdown-btn');
     const completedTasksList = document.getElementById('completed-tasks-list');
+    const server = "https://school-manager-wt55.onrender.com/tasks";
     let selectedTask = null;
 
     // Show the modal when clicking "Add Task"
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
             let response;
             if (selectedTask) {
-                response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
+                response = await fetch(`${server}/${selectedTask._id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }),
                 });
             } else {
-                response = await fetch('http://localhost:5001/tasks/newTask', {
+                response = await fetch(`${server}/newTask`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, subject, dueDate, priority, subtasks }),
@@ -141,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const oldStatus = selectedTask.status;
         try {
             console.log(`Updating status for task ID ${selectedTask._id} to ${newStatus}...`);
-            const response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
+            const response = await fetch(`${server}tasks/${selectedTask._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus }),
@@ -178,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function updateCompletedTasksList() {
         try {
-            const response = await fetch('http://localhost:5001/tasks');
+            const response = await fetch(`${server}`);
             if (!response.ok) throw new Error('Failed to fetch tasks');
             const tasks = await response.json();
             const completedTasks = tasks.filter(task => task.status === 'completed');
@@ -233,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const taskId = selectedTask._id;
         if (confirm('Are you sure you want to delete this task?')) {
             try {
-                const response = await fetch(`http://localhost:5001/tasks/${taskId}`, {
+                const response = await fetch(`${server}tasks/${taskId}`, {
                     method: 'DELETE'
                 });
                 if (!response.ok) {
@@ -274,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadTasks() {
         try {
             console.log("Fetching tasks");
-            const response = await fetch(`http://localhost:5001/tasks`);
+            const response = await fetch(`${server}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch tasks');
             }
@@ -313,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Completed Tasks
     async function loadCompletedTasks() {
         try {
-            const response = await fetch("http://localhost:5001/tasks");
+            const response = await fetch(`${server}`);
             if (!response.ok) throw new Error('Failed to fetch tasks');
             const tasks = await response.json();
             const completedTasks = tasks.filter(task => task.status === 'completed');
