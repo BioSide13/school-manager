@@ -50,7 +50,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, subject, dueDate, priority, subtasks }),
+                    body: JSON.stringify({ 
+                        ...selectedTask,
+                        name, 
+                        subject, 
+                        dueDate, 
+                        priority, 
+                        subtasks 
+                    }),
                 });
             } else {
                 // Create a new task
@@ -108,8 +115,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTaskInDOM(task) {
         const taskCard = document.querySelector(`.task-card[data-id='${task._id}']`);
         if (taskCard) {
-            taskCard.textContent = task.name;
+            // Update all visible properties of the task card
+            taskCard.textContent = task.name.charAt(0).toUpperCase() + task.name.slice(1).toLowerCase();
             taskCard.className = `task-card ${task.priority}-priority`;
+            taskCard.dataset.status = task.status;
+            
+            // If the task status has changed, move it to the correct list
+            const currentList = taskCard.parentElement;
+            const targetList = document.getElementById(task.status);
+            
+            if (targetList && currentList.id !== task.status) {
+                taskCard.remove();
+                targetList.appendChild(taskCard);
+            }
+            
+            // Update the task details display if this is the currently selected task
+            if (selectedTask && selectedTask._id === task._id) {
+                displayTaskDetails(task);
+            }
         }
     }
 
@@ -128,57 +151,42 @@ document.addEventListener('DOMContentLoaded', () => {
         taskStatusUpdate.classList.remove('hidden');
         taskStatusSelect.value = task.status;
 
-        // Show both button when task is selected
+        // Show both buttons when task is selected
         editTaskBtn.style.display = 'block'; 
         deleteTaskBtn.style.display = 'block';
     }
 
     // Handle status changes
-taskStatusSelect.addEventListener('change', async () => {
-    if (!selectedTask) return;
+    taskStatusSelect.addEventListener('change', async () => {
+        if (!selectedTask) return;
 
-    const newStatus = taskStatusSelect.value;
-    const oldStatus = selectedTask.status; // Store the current status
+        const newStatus = taskStatusSelect.value;
+        const oldStatus = selectedTask.status;
 
-    try {
-        console.log(`Updating status for task ID ${selectedTask._id} to ${newStatus}...`);
-        
-        // Send the status update to the backend
-        const response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: newStatus }),
-        });
+        try {
+            const response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    ...selectedTask,
+                    status: newStatus 
+                }),
+            });
 
-        if (!response.ok) throw new Error('Failed to update task status');
+            if (!response.ok) throw new Error('Failed to update task status');
 
-        // Update the selected task and the DOM
-        const updatedTask = await response.json();
-        selectedTask = updatedTask;
+            const updatedTask = await response.json();
+            selectedTask = updatedTask;
+            
+            // Use the existing updateTaskInDOM function to handle the update
+            updateTaskInDOM(updatedTask);
 
-        // Remove task from the old list
-        const oldTaskCard = document.querySelector(`.task-card[data-id="${selectedTask._id}"]`);
-        if (oldTaskCard) oldTaskCard.remove();
-
-        // Add task to the new list
-        const targetList = document.getElementById(newStatus);
-        if (targetList) {
-            const newTaskCard = createTaskCard(updatedTask);
-            targetList.appendChild(newTaskCard);
+        } catch (error) {
+            console.error('Error updating task status:', error);
+            alert('Error updating task status. Please try again.');
+            taskStatusSelect.value = oldStatus;
         }
-
-        // Update task details display
-        displayTaskDetails(updatedTask);
-        console.log('Task status updated successfully!');
-    } catch (error) {
-        console.error('Error updating task status:', error);
-        alert('Error updating task status. Please try again.');
-
-        // Revert the status select dropdown to the old value
-        taskStatusSelect.value = oldStatus;
-    }
-});
-
+    });
 
     // Handle task deselection
     document.body.addEventListener('click', (e) => {
@@ -249,7 +257,6 @@ taskStatusSelect.addEventListener('change', async () => {
         taskStatusUpdate.classList.add('hidden');
     }
 
-
     // Populate the modal with task details
     function populateModal(task) {
         document.getElementById('task-name').value = task.name;
@@ -262,7 +269,6 @@ taskStatusSelect.addEventListener('change', async () => {
     // Load tasks from the backend
     async function loadTasks() {
         try {
-            
             console.log("Fetching tasks");
             const response = await fetch(`http://localhost:5001/tasks`);
 
@@ -291,14 +297,14 @@ taskStatusSelect.addEventListener('change', async () => {
                     const taskCard = createTaskCard(task);
                     targetList.appendChild(taskCard);
                 } else {
-                    console.warn(`Invalid status for task: ${task.status}`)};
+                    console.warn(`Invalid status for task: ${task.status}`);
+                }
             });
     
         } catch (error) {
             console.error('Error loading tasks:', error);
         }
     }
-
 
     // Toggle completed tasks dropdown
     completedDropdownBtn.addEventListener('click', () => {
