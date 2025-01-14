@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const oldStatus = selectedTask.status;
         try {
             console.log(`Updating status for task ID ${selectedTask._id} to ${newStatus}...`);
-            const response = await fetch(`${server}tasks/${selectedTask._id}`, {
+            const response = await fetch(`${server}/${selectedTask._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus }),
