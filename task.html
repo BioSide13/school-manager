@@ -15,8 +15,18 @@
     <div class="main-content">
         <h1>Tasks</h1>
         <!-- Add Task Button -->
-        <div class="add-task-container">
-            <button id="add-task-btn">+ Add Task</button>
+        <div class="task-header">
+            <div class="add-task-container">
+                <button id="add-task-btn">+ Add Task</button>
+            </div>
+            <div class="completed-task-dropdwon">
+                <button id="completed-dropdown-btn">
+                    Completed Tasks <span class="dropdown-arrow">▼</span>
+                </button>
+                <div id="completed-tasks-list" class="hidden">
+                    <!-- Completed tasks will be added here dynamically -->
+                </div>
+            </div>
         </div>
 
         <div class="task-board">
@@ -36,6 +46,13 @@
             <h2>Task Details</h2>
             <div id="task-details">
                 <p>Select a task to view details.</p>
+            </div>
+            <div class="task-status-update hidden">
+                <select id="task-status-select">
+                    <option value="not-started">Not Started</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
             </div>
             <div class="task-actions">
                 <button id="edit-task-btn" style="display: none;">Edit Task</button>
@@ -67,13 +84,6 @@
 
                 <label for="task-subtasks">Subtasks (Optional):</label>
                 <textarea id="task-subtasks" placeholder="Enter subtasks separated by commas"></textarea>
-
-                <label for="task-status">Status:</label>
-                <select id="task-status" required>
-                    <option value="not-started">Not Started</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                </select>
 
                 <button type="submit" id="save-task-btn">Save Task</button>
             </form>
