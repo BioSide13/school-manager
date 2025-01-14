@@ -52,6 +52,87 @@ img {
     flex-grow: 1;
 }
 
+/* Task header layout - Adjusted for existing HTML */
+.task-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 20px 20px 20px;
+    position: relative;
+}
+
+.add-task-container {
+    margin: 0;
+    order: 2; /* Places the add button after the dropdown */
+}
+
+.completed-task-dropdwon {
+    margin-right: 15px;
+    position: relative;
+    order: 1; /* Places the dropdown before the add button */
+}
+
+/* Add Task Button */
+#add-task-btn {
+    background-color: #27AE60;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+#add-task-btn:hover {
+    background-color: #219150;
+}
+
+/* Completed Task Dropdown */
+#completed-dropdown-btn {
+    background-color: #2C3E50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#completed-dropdown-btn:hover {
+    background-color: #34495E;
+}
+
+.dropdown-arrow {
+    transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+#completed-tasks-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #2C3E50;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding: 10px;
+    min-width: 200px;
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#completed-tasks-list.hidden {
+    display: none;
+}
+
 /* Task board layout */
 .task-board {
     display: flex;
@@ -83,70 +164,53 @@ img {
     background-color: #3E4A59;
     padding: 10px;
     border-radius: 8px;
-    cursor: grab;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
 .task-card.low-priority {
-    border-left: 5px solid #27AE60; /* Green */
+    border-left: 5px solid #27AE60;
 }
 
 .task-card.medium-priority {
-    border-left: 5px solid #F1C40F; /* Yellow */
+    border-left: 5px solid #F1C40F;
 }
 
 .task-card.high-priority {
-    border-left: 5px solid #E74C3C; /* Red */
+    border-left: 5px solid #E74C3C;
 }
 
-/* Details panel main container */
+/* Details panel styles */
 .details-panel {
     background-color: #2C3E50;
     padding: 20px;
     border-radius: 10px;
     margin-top: 20px;
-    color: #f1f1f1;
 }
 
-/* Panel header */
-.details-panel h2 {
-    color: #f1f1f1;
-    font-size: 24px;
-    margin-bottom: 15px;
-    font-weight: 500;
-}
-
-/* Task details container */
 #task-details {
     text-align: left;
     margin-bottom: 20px;
 }
 
-/* Individual detail lines */
 #task-details p {
     margin: 5px 0;
     font-size: 16px;
 }
 
-/* Bold labels in details */
 #task-details strong {
     font-weight: 500;
     margin-right: 8px;
 }
 
-/* Button container */
 .task-actions {
     display: flex;
     gap: 10px;
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-    float: left;
 }
 
-/* Base button styles */
+/* Action buttons */
 #edit-task-btn,
 #delete-task-btn {
     flex: 1;
@@ -160,7 +224,6 @@ img {
     transition: background-color 0.2s ease;
 }
 
-/* Edit button */
 #edit-task-btn {
     background-color: #3498DB;
     color: white;
@@ -170,7 +233,6 @@ img {
     background-color: #2980B9;
 }
 
-/* Delete button */
 #delete-task-btn {
     background-color: #E74C3C;
     color: white;
@@ -180,40 +242,32 @@ img {
     background-color: #C0392B;
 }
 
-/* Style for when no task is selected */
-#task-details p:only-child {
-    color: #95a5a6;
-    font-style: italic;
+/* Status selection styles */
+.task-status-update {
+    margin: 15px 0;
 }
 
-/* Hidden state for buttons */
-#edit-task-btn[style*="display: none"],
-#delete-task-btn[style*="display: none"] {
+.task-status-update.hidden {
     display: none;
 }
 
-/* Add Task Button */
-.add-task-container {
-    display: flex;
-    justify-content: flex-end;
-    margin: 10px 20px;
-}
-
-#add-task-btn {
-    background-color: #27AE60; /* Green */
-    color: white;
-    padding: 10px 20px;
-    border: none;
+#task-status-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #34495E;
     border-radius: 5px;
+    background-color: #34495E;
+    color: white;
+    font-size: 14px;
     cursor: pointer;
-    font-size: 16px;
 }
 
-#add-task-btn:hover {
-    background-color: #219150;
+#task-status-select option {
+    background-color: #2C3E50;
+    color: white;
 }
 
-/* Modal Styling */
+/* Modal styles */
 .modal {
     position: fixed;
     top: 0;
@@ -233,20 +287,21 @@ img {
 
 .modal-content {
     background-color: #2C3E50;
-    color: white;
     padding: 20px;
     border-radius: 10px;
     width: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
 
 .modal-content h2 {
     margin-bottom: 20px;
+    color: white;
 }
 
 .modal-content label {
     display: block;
     margin-top: 10px;
+    color: white;
 }
 
 .modal-content input,
@@ -258,6 +313,8 @@ img {
     margin-bottom: 15px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    background-color: #34495E;
+    color: white;
 }
 
 .modal-content button {
@@ -284,4 +341,18 @@ img {
 
 .close-btn:hover {
     color: #bbb;
+}
+
+/* Completed task items */
+.completed-task-item {
+    padding: 8px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    background-color: #34495E;
+    color: white;
+    cursor: pointer;
+}
+
+.completed-task-item:hover {
+    background-color: #3D566E;
 }
