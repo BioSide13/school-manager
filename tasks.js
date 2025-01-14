@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .split(',')
             .map(task => task.trim())
             .filter(task => task !== ''); // Filter out empty strings
-        const status = document.getElementById('task-status').value;
 
         try {
             let response;
@@ -135,59 +134,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle status changes
-    taskStatusSelect.addEventListener('change', async () => {
-        if (!selectedTask) return;
-    
-        const newStatus = taskStatusSelect.value;
-        const oldStatus = selectedTask.status;
+taskStatusSelect.addEventListener('change', async () => {
+    if (!selectedTask) return;
+
+    const newStatus = taskStatusSelect.value;
+    const oldStatus = selectedTask.status; // Store the current status
+
+    try {
+        console.log(`Updating status for task ID ${selectedTask._id} to ${newStatus}...`);
         
-        try {
-            const response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus })
-            });
-    
-            if (!response.ok) throw new Error('Failed to update task status');
-    
-            const updatedTask = await response.json();
-            
-            // Remove task from old list
-            const oldTaskCard = document.querySelector(`.task-card[data-id="${selectedTask._id}"]`);
-            if (oldTaskCard) {
-                oldTaskCard.remove();
-            }
-    
-            // Update task in the appropriate list
-            if (newStatus === 'completed') {
-                // Update completed tasks list if visible
-                if (!completedTasksList.classList.contains('hidden')) {
-                    await loadCompletedTasks();
-                }
-            } else {
-                // Get the correct list based on new status
-                const targetListId = task.status;
-                const targetList = document.getElementById(targetListId);
-                
-                if (targetList) {
-                    const newTaskCard = createTaskCard(updatedTask);
-                    targetList.appendChild(newTaskCard);
-                }
-            }
-    
-            // Update selected task reference
-            selectedTask = updatedTask;
-            
-            // Update task details display
-            displayTaskDetails(updatedTask);
-            
-        } catch (error) {
-            console.error('Error updating task status:', error);
-            alert('Error updating task status. Please try again.');
-            // Revert status select to previous value
-            taskStatusSelect.value = oldStatus;
+        // Send the status update to the backend
+        const response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus }),
+        });
+
+        if (!response.ok) throw new Error('Failed to update task status');
+
+        // Update the selected task and the DOM
+        const updatedTask = await response.json();
+        selectedTask = updatedTask;
+
+        // Remove task from the old list
+        const oldTaskCard = document.querySelector(`.task-card[data-id="${selectedTask._id}"]`);
+        if (oldTaskCard) oldTaskCard.remove();
+
+        // Add task to the new list
+        const targetList = document.getElementById(newStatus);
+        if (targetList) {
+            const newTaskCard = createTaskCard(updatedTask);
+            targetList.appendChild(newTaskCard);
         }
-    });
+
+        // Update task details display
+        displayTaskDetails(updatedTask);
+        console.log('Task status updated successfully!');
+    } catch (error) {
+        console.error('Error updating task status:', error);
+        alert('Error updating task status. Please try again.');
+
+        // Revert the status select dropdown to the old value
+        taskStatusSelect.value = oldStatus;
+    }
+});
+
 
     // Handle task deselection
     document.body.addEventListener('click', (e) => {
@@ -255,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editTaskBtn.style.display = 'none';
         deleteTaskBtn.style.display = 'none';
         taskStatusSelect.classList.add('hidden');
+        taskStatusUpdate.classList.add('hidden');
     }
 
 
@@ -270,13 +262,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load tasks from the backend
     async function loadTasks() {
         try {
-    
+            
+            console.log("Fetching tasks");
             const response = await fetch(`http://localhost:5001/tasks`);
+
             if (!response.ok) {
                 throw new Error('Failed to fetch tasks');
             }
     
             const tasks = await response.json();
+            console.log("Tasks fetched", tasks);
             
             // Clear existing tasks from all lists
             document.querySelectorAll('.task-list').forEach(list => {
@@ -289,13 +284,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 
-                const targetListId = task.status.replace('-', ' ');
+                const targetListId = task.status;
                 const targetList = document.getElementById(targetListId);
                 
                 if (targetList) {
                     const taskCard = createTaskCard(task);
                     targetList.appendChild(taskCard);
-                }
+                } else {
+                    console.warn(`Invalid status for task: ${task.status}`)};
             });
     
         } catch (error) {
