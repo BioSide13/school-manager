@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskDetails = document.getElementById('task-details');
     const editTaskBtn = document.getElementById('edit-task-btn');
     const deleteTaskBtn = document.getElementById('delete-task-btn');
+    const taskStatusSelect = document.getElementById('task-status-select');
+    const taskStatusUpdate = document.querySelector('.task-status-update');
+    const completedDropdownBtn = document.getElementById('completed-dropdown-btn');
+    const completedTasksList = document.getElementById('completed-tasks-list');
 
     let selectedTask = null; // Track the currently selected task
 
@@ -92,11 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
         taskCard.className = `task-card ${task.priority}-priority`;
         taskCard.textContent = task.name.charAt(0).toUpperCase() + task.name.slice(1).toLowerCase();
         taskCard.dataset.id = task._id;
-
+        taskCard.dataset.status = task.status; // Add status to dataset
+    
         taskCard.addEventListener('click', () => {
             displayTaskDetails(task);
         });
-
+    
         return taskCard;
     }
 
@@ -119,10 +124,70 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Priority:</strong> ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1).toLowerCase()}</p>
             <p><strong>Subtasks:</strong> ${task.subtasks.join(', ') || 'None'}</p>
         `;
+
+        // Show status select and set current value
+        taskStatusUpdate.classList.remove('hidden');
+        taskStatusSelect.value = task.status;
+
         // Show both button when task is selected
         editTaskBtn.style.display = 'block'; 
         deleteTaskBtn.style.display = 'block';
     }
+
+    // Handle status changes
+    taskStatusSelect.addEventListener('change', async () => {
+        if (!selectedTask) return;
+    
+        const newStatus = taskStatusSelect.value;
+        const oldStatus = selectedTask.status;
+        
+        try {
+            const response = await fetch(`http://localhost:5001/tasks/${selectedTask._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+    
+            if (!response.ok) throw new Error('Failed to update task status');
+    
+            const updatedTask = await response.json();
+            
+            // Remove task from old list
+            const oldTaskCard = document.querySelector(`.task-card[data-id="${selectedTask._id}"]`);
+            if (oldTaskCard) {
+                oldTaskCard.remove();
+            }
+    
+            // Update task in the appropriate list
+            if (newStatus === 'completed') {
+                // Update completed tasks list if visible
+                if (!completedTasksList.classList.contains('hidden')) {
+                    await loadCompletedTasks();
+                }
+            } else {
+                // Get the correct list based on new status
+                const targetListId = task.status;
+                const targetList = document.getElementById(targetListId);
+                
+                if (targetList) {
+                    const newTaskCard = createTaskCard(updatedTask);
+                    targetList.appendChild(newTaskCard);
+                }
+            }
+    
+            // Update selected task reference
+            selectedTask = updatedTask;
+            
+            // Update task details display
+            displayTaskDetails(updatedTask);
+            
+        } catch (error) {
+            console.error('Error updating task status:', error);
+            alert('Error updating task status. Please try again.');
+            // Revert status select to previous value
+            taskStatusSelect.value = oldStatus;
+        }
+    });
 
     // Handle task deselection
     document.body.addEventListener('click', (e) => {
@@ -130,8 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const isModalClick = e.target.closest('.modal-content');
         const isEditButtonClick = e.target === editTaskBtn;
         const isDeleteButtonClick = e.target === deleteTaskBtn;
+        const isStatusSelect = e.target === taskStatusSelect;
+        const isCompletedTask = e.target.closest('.completed-task-item');
         
-        if (!taskCard && !isModalClick && !isEditButtonClick && !isDeleteButtonClick && !taskDetails.contains(e.target)) {
+        if (!taskCard && !isModalClick && !isEditButtonClick && !isDeleteButtonClick && !taskDetails.contains(e.target) && !isStatusSelect && !isCompletedTask) {
             resetTaskDetailsAndButtons();
         }
     });
@@ -187,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         taskDetails.innerHTML = '<p>Select a task to view details.</p>';
         editTaskBtn.style.display = 'none';
         deleteTaskBtn.style.display = 'none';
+        taskStatusSelect.classList.add('hidden');
     }
 
 
@@ -202,15 +270,78 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load tasks from the backend
     async function loadTasks() {
         try {
-            const response = await fetch('http://localhost:5001/tasks');
+    
+            const response = await fetch(`http://localhost:5001/tasks`);
             if (!response.ok) {
                 throw new Error('Failed to fetch tasks');
             }
-
+    
             const tasks = await response.json();
-            tasks.forEach(task => addTaskToDOM(task));
+            
+            // Clear existing tasks from all lists
+            document.querySelectorAll('.task-list').forEach(list => {
+                list.innerHTML = '';
+            });
+    
+            // Distribute tasks to appropriate lists
+            tasks.forEach(task => {
+                if (task.status === 'completed') {
+                    return;
+                }
+                
+                const targetListId = task.status.replace('-', ' ');
+                const targetList = document.getElementById(targetListId);
+                
+                if (targetList) {
+                    const taskCard = createTaskCard(task);
+                    targetList.appendChild(taskCard);
+                }
+            });
+    
         } catch (error) {
             console.error('Error loading tasks:', error);
+        }
+    }
+
+
+    // Toggle completed tasks dropdown
+    completedDropdownBtn.addEventListener('click', () => {
+        completedTasksList.classList.toggle('hidden');
+        completedDropdownBtn.querySelector('.dropdown-arrow').classList.toggle('open');
+        if (!completedTasksList.classList.contains('hidden')) {
+            loadCompletedTasks();
+        }
+    });
+
+    // Load Completed Tasks
+    async function loadCompletedTasks() {
+        try {
+            const response = await fetch("http://localhost:5001/tasks");
+            if (!response.ok) throw new Error('Failed to fetch tasks');
+    
+            const tasks = await response.json();
+            const completedTasks = tasks.filter(task => task.status === 'completed');
+    
+            completedTasksList.innerHTML = '';
+    
+            if (completedTasks.length > 0) {
+                completedTasks.forEach(task => {
+                    const taskItem = document.createElement('div');
+                    taskItem.className = 'completed-task-item';
+                    taskItem.dataset.id = task._id;
+                    taskItem.textContent = `${task.name} (${task.subject})`;
+                    
+                    taskItem.addEventListener('click', () => {
+                        displayTaskDetails(task);
+                    });
+                    
+                    completedTasksList.appendChild(taskItem);
+                });
+            } else {
+                completedTasksList.innerHTML = '<div class="completed-task-item">No completed tasks</div>';
+            }
+        } catch (error) {
+            console.error('Error loading completed tasks:', error);
         }
     }
 
