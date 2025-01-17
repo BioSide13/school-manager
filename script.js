@@ -64,13 +64,13 @@ function greeting() {
 
     greeting.innerHTML = "";
 
-    if (hours < 12 & hours >= 5) {
+    if (hours < 12 & hours >= 4) {
         greeting.textContent = "Good Morning Arhan!"
     } else if (hours >= 12 & hours < 16) {
         greeting.textContent = "Good Afternoon Arhan!"
     } else if (hours >= 16 & hours < 20) {
         greeting.textContent = "Good Evening Arhan!"
-    } else if (hours >= 20 || hours < 5) {
+    } else if (hours >= 20 || hours < 4) {
         greeting.textContent = "Good Night Arhan!"
     }
 }
