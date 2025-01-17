@@ -41,3 +41,8 @@ img {
 .sidebar a:hover:not(.active) {
     background-color: #1A2633;
 }
+
+h1 {
+    margin-left: 70px;
+    margin-top: 20px;
+}
