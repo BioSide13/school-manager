@@ -11,7 +11,7 @@ const timetable = {
     "Friday B": "Study Hall 1 - Room 108, Computer Science - Room 216, Spanish - Room 120, PHE, Computer Science - Room 216, Psychology - Room 120"
 };
 
-const startDate = new Date("2025-01-20");
+const startDate = new Date("2024-11-11");
 
 function getTodayDate() {
     return new Date();
@@ -21,7 +21,7 @@ function getWeekAndDay() {
     const today = getTodayDate();
     const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 
-    const isWeekA = Math.floor(daysSinceStart / 7) % 2 === 0;
+    const isWeekA = Math.floor(daysSinceStart / 7) % 2 === 1;
     const week = isWeekA ? "A" : "B";
 
     const dayIndex = today.getDay();
