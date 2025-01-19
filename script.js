@@ -11,7 +11,7 @@ const timetable = {
     "Friday B": "Study Hall 1 - Room 108, Computer Science - Room 216, Spanish - Room 120, PHE, Computer Science - Room 216, Psychology - Room 120"
 };
 
-const startDate = new Date("2024-11-11");
+const startDate = new Date("2025-01-20");
 
 function getTodayDate() {
     return new Date();
