@@ -21,7 +21,7 @@ function getWeekAndDay() {
     const today = getTodayDate();
     const daysSinceStart = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 
-    const isWeekA = Math.floor(daysSinceStart / 7) % 2 === 1;
+    const isWeekA = Math.floor(daysSinceStart / 7) % 2 === 0;
     const week = isWeekA ? "A" : "B";
 
     const dayIndex = today.getDay();
