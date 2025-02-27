@@ -4,11 +4,11 @@ const timetable = {
     "Wednesday A": "Physics - Physics Lab, English - Room 103, TOK - Room 109, Math AA - Room 216, College Counselling - Room 116, Study Hall 1 - Room 103",
     "Thursday A": "English - Room 225, TOK - Room 109, Math AA - Room 216, Study Hall 1 - Room 103, English - Room 103",
     "Friday A": "Research - Library, Flex Events, English - Room 103, PHE, Math AA - Room 216, English - Room 225",
-    "Monday B": "Study Hall 3 - Room 115, Spanish - Room 120, Study Hall 1 - Room 108, Computer Science - Room 216, Psychology - Room 120, Study Hall 3 - Room 122",
-    "Tuesday B": "Study Hall 1 - Room 108, Spanish - Room 120, Psychology - Room 120, Computer Science - Room 216, Flex Events, Study Hall 3 - Room 109",
-    "Wednesday B": "Psychology - Room 120, TOK - Room 109, Computer Science - Room 216, Study Hall 3 - Room 117, Spanish - Room 120, Study Hall 1 - Room 108",
-    "Thursday B": "Psychology - Room 120, Study Hall 1 - Room 208, TOK - Room 109, Spanish - Room 120, Study Hall 3 - Room 117",
-    "Friday B": "Study Hall 1 - Room 225, Computer Science - Room 216, Spanish - Room 120, PHE, Computer Science - Room 216, Psychology - Room 120"
+    "Monday B": "Study Hall 3 - Room 115, Spanish - Room 109, Study Hall 1 - Room 108, Computer Science - Room 216, Psychology - Room 120, Study Hall 3 - Room 122",
+    "Tuesday B": "Study Hall 1 - Room 108, Spanish - Room 109, Psychology - Room 120, Computer Science - Room 216, Flex Events, Study Hall 3 - Room 109",
+    "Wednesday B": "Psychology - Room 120, TOK - Room 109, Computer Science - Room 216, Study Hall 3 - Room 117, Spanish - Room 109, Study Hall 1 - Room 108",
+    "Thursday B": "Psychology - Room 120, Study Hall 1 - Room 208, TOK - Room 109, Spanish - Room 109, Study Hall 3 - Room 117",
+    "Friday B": "Study Hall 1 - Room 225, Computer Science - Room 216, Spanish - Room 109, PHE, Computer Science - Room 216, Psychology - Room 120"
 };
 
 const startDate = new Date("2024-11-11");
